@@ -1,0 +1,28 @@
+start ==========================
+epoch 10
+Using device: mps
+train_data: 60000, test_data: 10000, batch_size: 64
+Epoch 1, Train Loss: 2.2583, Accuracy: 23.8633 %
+Test Loss: 2.1692, Accuracy: 49.0000 %
+Epoch 2, Train Loss: 1.7603, Accuracy: 57.2500 %
+Test Loss: 1.1026, Accuracy: 72.6800 %
+Epoch 3, Train Loss: 0.7473, Accuracy: 80.1667 %
+Test Loss: 0.5155, Accuracy: 85.6200 %
+Epoch 4, Train Loss: 0.4581, Accuracy: 87.1000 %
+Test Loss: 0.3830, Accuracy: 89.0600 %
+Epoch 5, Train Loss: 0.3685, Accuracy: 89.3017 %
+Test Loss: 0.3213, Accuracy: 90.8100 %
+Epoch 6, Train Loss: 0.3191, Accuracy: 90.7167 %
+Test Loss: 0.2872, Accuracy: 91.8000 %
+Epoch 7, Train Loss: 0.2842, Accuracy: 91.6550 %
+Test Loss: 0.2533, Accuracy: 92.7300 %
+Epoch 8, Train Loss: 0.2555, Accuracy: 92.5067 %
+Test Loss: 0.2335, Accuracy: 93.2400 %
+Epoch 9, Train Loss: 0.2316, Accuracy: 93.2333 %
+Test Loss: 0.2097, Accuracy: 94.1600 %
+Epoch 10, Train Loss: 0.2114, Accuracy: 93.7950 %
+Test Loss: 0.1864, Accuracy: 94.4900 %
+result plt ok.
+cost 74.011817 s
+最终结果: 测试损失: 0.1864, 准确率: 94.4900
+finished.
