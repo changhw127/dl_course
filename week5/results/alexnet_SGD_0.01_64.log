@@ -1,0 +1,126 @@
+start ==========================
+epoch 20
+Using device: mps
+model:alexnet
+lr:0.01
+opt:SGD
+AlexNet原始结构，输入224x224，输出2类
+train_data: 2227, test_data: 557, batch_size: 64
+sample size:torch.Size([3, 224, 224])
+Epoch 1, Train Loss: 0.6933, Accuracy: 49.8877 %
+Test Loss: 0.6931, Accuracy: 49.9102 %
+Epoch 2, Train Loss: 0.6931, Accuracy: 49.7530 %
+Test Loss: 0.6930, Accuracy: 49.9102 %
+Epoch 3, Train Loss: 0.6930, Accuracy: 50.4266 %
+Test Loss: 0.6929, Accuracy: 49.9102 %
+Epoch 4, Train Loss: 0.6930, Accuracy: 51.4145 %
+Test Loss: 0.6928, Accuracy: 66.0682 %
+Epoch 5, Train Loss: 0.6929, Accuracy: 51.3696 %
+Test Loss: 0.6927, Accuracy: 62.2980 %
+Epoch 6, Train Loss: 0.6929, Accuracy: 51.5043 %
+Test Loss: 0.6926, Accuracy: 68.9408 %
+Epoch 7, Train Loss: 0.6926, Accuracy: 53.7943 %
+Test Loss: 0.6925, Accuracy: 69.6589 %
+Epoch 8, Train Loss: 0.6925, Accuracy: 55.7252 %
+Test Loss: 0.6924, Accuracy: 65.1706 %
+Epoch 9, Train Loss: 0.6924, Accuracy: 57.2968 %
+Test Loss: 0.6922, Accuracy: 69.2998 %
+Epoch 10, Train Loss: 0.6921, Accuracy: 57.0723 %
+Test Loss: 0.6921, Accuracy: 69.8384 %
+Epoch 11, Train Loss: 0.6920, Accuracy: 57.8357 %
+Test Loss: 0.6919, Accuracy: 70.1975 %
+Epoch 12, Train Loss: 0.6918, Accuracy: 58.6888 %
+Test Loss: 0.6917, Accuracy: 70.5566 %
+Epoch 13, Train Loss: 0.6914, Accuracy: 60.3952 %
+Test Loss: 0.6915, Accuracy: 71.2747 %
+Epoch 14, Train Loss: 0.6912, Accuracy: 61.7872 %
+Test Loss: 0.6912, Accuracy: 70.5566 %
+Epoch 15, Train Loss: 0.6914, Accuracy: 59.6318 %
+Test Loss: 0.6909, Accuracy: 70.3770 %
+Epoch 16, Train Loss: 0.6907, Accuracy: 63.9425 %
+Test Loss: 0.6905, Accuracy: 70.5566 %
+Epoch 17, Train Loss: 0.6903, Accuracy: 63.5833 %
+Test Loss: 0.6900, Accuracy: 69.2998 %
+Epoch 18, Train Loss: 0.6900, Accuracy: 63.0445 %
+Test Loss: 0.6895, Accuracy: 69.8384 %
+Epoch 19, Train Loss: 0.6898, Accuracy: 63.3139 %
+Test Loss: 0.6888, Accuracy: 69.2998 %
+Epoch 20, Train Loss: 0.6889, Accuracy: 64.3467 %
+Test Loss: 0.6880, Accuracy: 70.0180 %
+result plt ok.
+cost 242.629587 s
+最终结果: 测试损失: 0.6880, 准确率: 70.0180
+finished.
+start ==========================
+epoch 30
+Using device: mps
+model:alexnet
+lr:0.01
+opt:SGD
+AlexNet原始结构，输入224x224，输出2类
+train_data: 2227, test_data: 557, batch_size: 64
+sample size:torch.Size([3, 224, 224])
+Epoch 1, Train Loss: 0.6932, Accuracy: 48.5855 %
+Test Loss: 0.6930, Accuracy: 49.9102 %
+Epoch 2, Train Loss: 0.6931, Accuracy: 50.0225 %
+Test Loss: 0.6929, Accuracy: 56.7325 %
+Epoch 3, Train Loss: 0.6928, Accuracy: 51.8635 %
+Test Loss: 0.6927, Accuracy: 62.4776 %
+Epoch 4, Train Loss: 0.6926, Accuracy: 54.6026 %
+Test Loss: 0.6926, Accuracy: 67.5045 %
+Epoch 5, Train Loss: 0.6926, Accuracy: 54.0189 %
+Test Loss: 0.6924, Accuracy: 55.2962 %
+Epoch 6, Train Loss: 0.6924, Accuracy: 54.4679 %
+Test Loss: 0.6922, Accuracy: 57.0916 %
+Epoch 7, Train Loss: 0.6922, Accuracy: 56.8478 %
+Test Loss: 0.6920, Accuracy: 59.9641 %
+Epoch 8, Train Loss: 0.6919, Accuracy: 58.0153 %
+Test Loss: 0.6918, Accuracy: 56.7325 %
+Epoch 9, Train Loss: 0.6920, Accuracy: 57.3417 %
+Test Loss: 0.6915, Accuracy: 53.3214 %
+Epoch 10, Train Loss: 0.6914, Accuracy: 56.7580 %
+Test Loss: 0.6912, Accuracy: 57.9892 %
+Epoch 11, Train Loss: 0.6911, Accuracy: 55.3211 %
+Test Loss: 0.6909, Accuracy: 65.7092 %
+Epoch 12, Train Loss: 0.6909, Accuracy: 59.8114 %
+Test Loss: 0.6905, Accuracy: 65.7092 %
+Epoch 13, Train Loss: 0.6905, Accuracy: 59.6767 %
+Test Loss: 0.6899, Accuracy: 68.0431 %
+Epoch 14, Train Loss: 0.6897, Accuracy: 63.2241 %
+Test Loss: 0.6893, Accuracy: 68.7612 %
+Epoch 15, Train Loss: 0.6891, Accuracy: 66.3224 %
+Test Loss: 0.6884, Accuracy: 68.4022 %
+Epoch 16, Train Loss: 0.6884, Accuracy: 65.4692 %
+Test Loss: 0.6873, Accuracy: 68.0431 %
+Epoch 17, Train Loss: 0.6871, Accuracy: 64.8406 %
+Test Loss: 0.6858, Accuracy: 67.5045 %
+Epoch 18, Train Loss: 0.6856, Accuracy: 66.9511 %
+Test Loss: 0.6837, Accuracy: 68.4022 %
+Epoch 19, Train Loss: 0.6832, Accuracy: 66.0979 %
+Test Loss: 0.6806, Accuracy: 68.5817 %
+Epoch 20, Train Loss: 0.6794, Accuracy: 67.1307 %
+Test Loss: 0.6754, Accuracy: 68.9408 %
+Epoch 21, Train Loss: 0.6732, Accuracy: 66.9511 %
+Test Loss: 0.6664, Accuracy: 70.9156 %
+Epoch 22, Train Loss: 0.6616, Accuracy: 68.4778 %
+Test Loss: 0.6482, Accuracy: 68.4022 %
+Epoch 23, Train Loss: 0.6328, Accuracy: 69.2860 %
+Test Loss: 0.6096, Accuracy: 68.2226 %
+Epoch 24, Train Loss: 0.5870, Accuracy: 71.5761 %
+Test Loss: 0.5601, Accuracy: 72.8905 %
+Epoch 25, Train Loss: 0.5617, Accuracy: 71.3516 %
+Test Loss: 0.5470, Accuracy: 71.4542 %
+Epoch 26, Train Loss: 0.5406, Accuracy: 73.3722 %
+Test Loss: 0.5314, Accuracy: 72.7110 %
+Epoch 27, Train Loss: 0.5270, Accuracy: 73.2375 %
+Test Loss: 0.5205, Accuracy: 73.4291 %
+Epoch 28, Train Loss: 0.5146, Accuracy: 74.7643 %
+Test Loss: 0.5102, Accuracy: 75.4039 %
+Epoch 29, Train Loss: 0.5156, Accuracy: 73.1926 %
+Test Loss: 0.5142, Accuracy: 73.9677 %
+Epoch 30, Train Loss: 0.5065, Accuracy: 75.2582 %
+Test Loss: 0.5023, Accuracy: 74.6858 %
+result plt ok.
+cost 337.0499 s
+最终结果: 测试损失: 0.5023, 准确率: 74.6858
+finished.
