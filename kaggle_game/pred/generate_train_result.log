@@ -1,0 +1,4 @@
+[2025-05-01 23:05:43] model:lenet_Adam_0.001_64.pth	acc:0.0 % 	same:0	total:500
+[2025-05-01 23:12:58] model:lenet_Adam_0.001_64.pth	acc:0.0 % 	same:0	total:500
+[2025-05-02 19:44:56] model:lenet_Adam_0.001_64_4_all_best_model.pth	acc:2.7658297489246775 % 	same:553	total:19994
+[2025-05-03 07:52:33] model:vgg_Adam_0.001_64.pth	acc:8.007402220666199 % 	same:1601	total:19994
