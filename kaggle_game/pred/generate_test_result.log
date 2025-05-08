@@ -1,0 +1,4 @@
+[2025-05-01 23:11:02] model:lenet_Adam_0.001_64.pth	total:500
+[2025-05-01 23:13:00] model:lenet_Adam_0.001_64.pth	total:500
+[2025-05-02 19:47:54] model:lenet_Adam_0.001_64_4_all_best_model.pth	total:20000
+[2025-05-03 07:54:00] model:vgg_Adam_0.001_64.pth	total:20000

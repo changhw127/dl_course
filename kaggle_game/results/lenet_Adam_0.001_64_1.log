@@ -1,0 +1,14 @@
+start ==========================
+epoch 50
+Using device: mps
+model:lenet
+lr:0.001
+opt:Adam
+
+补充了2个卷积层
+使用BN
+使用AdaptiveAvgPool2d
+使用Dropout
+
+train_data: 9000, test_data: 1000, batch_size: 64
+trian sample size:torch.Size([3, 30, 30])
