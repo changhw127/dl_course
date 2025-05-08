@@ -1,0 +1,58 @@
+start ==========================
+epoch 20
+Using device: mps
+model:lenet
+lr:0.001
+opt:Adam
+
+输入30x30。类别62
+使用BN
+使用AdaptiveAvgPool2d
+使用Dropout
+
+train_data: 9000, test_data: 1000, batch_size: 64
+trian sample size:torch.Size([3, 30, 30])
+Epoch 1, Train Loss: 4.1353, Accuracy: 3.1778 %
+Test Loss: 4.0764, Accuracy: 3.3000 %
+Epoch 2, Train Loss: 4.0816, Accuracy: 3.1556 %
+Test Loss: 4.0570, Accuracy: 3.5000 %
+Epoch 3, Train Loss: 4.0660, Accuracy: 3.3556 %
+Test Loss: 4.0615, Accuracy: 3.9000 %
+Epoch 4, Train Loss: 4.0567, Accuracy: 3.5000 %
+Test Loss: 4.0543, Accuracy: 3.2000 %
+Epoch 5, Train Loss: 4.0496, Accuracy: 3.6556 %
+Test Loss: 4.0501, Accuracy: 3.0000 %
+Epoch 6, Train Loss: 4.0435, Accuracy: 3.4333 %
+Test Loss: 4.0493, Accuracy: 3.4000 %
+Epoch 7, Train Loss: 4.0364, Accuracy: 3.7889 %
+Test Loss: 4.0431, Accuracy: 2.6000 %
+Epoch 8, Train Loss: 4.0320, Accuracy: 3.8000 %
+Test Loss: 4.0462, Accuracy: 2.9000 %
+Epoch 9, Train Loss: 4.0186, Accuracy: 3.9667 %
+Test Loss: 4.0349, Accuracy: 3.4000 %
+Epoch 10, Train Loss: 3.9885, Accuracy: 4.3889 %
+Test Loss: 3.9668, Accuracy: 5.5000 %
+Epoch 11, Train Loss: 3.7987, Accuracy: 6.9444 %
+Test Loss: 3.7167, Accuracy: 8.8000 %
+Epoch 12, Train Loss: 3.3543, Accuracy: 14.5889 %
+Test Loss: 3.2815, Accuracy: 15.1000 %
+Epoch 13, Train Loss: 2.7564, Accuracy: 26.5222 %
+Test Loss: 2.8616, Accuracy: 24.1000 %
+Epoch 14, Train Loss: 2.3521, Accuracy: 35.9556 %
+Test Loss: 2.3656, Accuracy: 37.7000 %
+Epoch 15, Train Loss: 2.0305, Accuracy: 43.1889 %
+Test Loss: 2.0953, Accuracy: 45.1000 %
+Epoch 16, Train Loss: 1.8095, Accuracy: 49.0778 %
+Test Loss: 2.0277, Accuracy: 45.0000 %
+Epoch 17, Train Loss: 1.6421, Accuracy: 54.2556 %
+Test Loss: 1.9842, Accuracy: 45.8000 %
+Epoch 18, Train Loss: 1.4739, Accuracy: 58.5667 %
+Test Loss: 1.9508, Accuracy: 47.6000 %
+Epoch 19, Train Loss: 1.3335, Accuracy: 61.8556 %
+Test Loss: 1.6848, Accuracy: 54.3000 %
+Epoch 20, Train Loss: 1.2207, Accuracy: 65.2111 %
+Test Loss: 1.8544, Accuracy: 49.6000 %
+result plt ok.
+cost 125.782619 s
+最终结果: 测试损失: 1.8544, 准确率: 49.6000
+finished.

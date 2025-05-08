@@ -4,6 +4,7 @@
 """
 import sys
 import copy
+import datetime
 import torch
 import matplotlib.pyplot as plt
 import os
@@ -27,6 +28,9 @@ class Logger(object):
         if show:
             print(msg)
         return True
+
+    def dt_str(self):
+        return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     @classmethod
     def progress_bar(cls, current, total, bar_length=50):

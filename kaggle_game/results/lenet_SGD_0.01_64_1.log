@@ -1,0 +1,16 @@
+start ==========================
+epoch 50
+Using device: mps
+model:lenet
+lr:0.01
+opt:SGD
+
+补充了2个卷积层
+使用BN
+使用AdaptiveAvgPool2d
+使用Dropout
+
+train_data: 89973, test_data: 9997, batch_size: 64
+trian sample size:torch.Size([3, 30, 30])
+Epoch 1, Train Loss: 4.2010, Accuracy: 3.3077 %
+Test Loss: 4.0585, Accuracy: 3.3410 %
