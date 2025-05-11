@@ -1,0 +1,46 @@
+start ==========================
+epoch 100
+Using device: mps
+model:yolo_v1
+lr:1e-06
+opt:SGD
+全连接层计算量过大，会产生约2亿参数,使用全卷积
+在卷积层后直接使用Flatten+FC会破坏空间相关性
+部分使用BN，
+优化权重初始化，因为可能导致空张量问题
+使用L2正则化
+train sample size:<PIL.Image.Image image mode=RGB size=500x333 at 0x132087310>
+Epoch 1, Train Loss: 106.7671
+Epoch 2, Train Loss: 105.4415
+Epoch 3, Train Loss: 104.8311
+Epoch 4, Train Loss: 103.9622
+Epoch 5, Train Loss: 103.1421
+Epoch 6, Train Loss: 102.7806
+Epoch 7, Train Loss: 102.2485
+Epoch 8, Train Loss: 101.7940
+Epoch 9, Train Loss: 101.6762
+Epoch 10, Train Loss: 100.8262
+Epoch 11, Train Loss: 100.7501
+Epoch 12, Train Loss: 101.6948
+Epoch 13, Train Loss: 101.0217
+Epoch 14, Train Loss: 100.8358
+Epoch 15, Train Loss: 100.5765
+Epoch 16, Train Loss: 100.8072
+Epoch 17, Train Loss: 100.3860
+Epoch 18, Train Loss: 100.4830
+Epoch 19, Train Loss: 100.6068
+Epoch 20, Train Loss: 100.4909
+Epoch 21, Train Loss: 100.2471
+Epoch 22, Train Loss: 100.3487
+Epoch 23, Train Loss: 100.5224
+Epoch 24, Train Loss: 100.7111
+Epoch 25, Train Loss: 101.0352
+Epoch 26, Train Loss: 100.5069
+Epoch 27, Train Loss: 100.6232
+Epoch 28, Train Loss: 100.5040
+Epoch 29, Train Loss: 100.3800
+Epoch 30, Train Loss: 100.3279
+Epoch 31, Train Loss: 100.4108
+Epoch 32, Train Loss: 100.2483
+Epoch 33, Train Loss: 100.3601
+Epoch 34, Train Loss: 100.3419

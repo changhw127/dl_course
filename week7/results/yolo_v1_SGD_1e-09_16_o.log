@@ -1,0 +1,10 @@
+start ==========================
+epoch 100
+Using device: mps
+model:yolo_v1
+lr:1e-09
+opt:SGD
+全连接层计算量过大，会产生约2亿参数,使用全卷积
+在卷积层后直接使用Flatten+FC会破坏空间相关性
+使用BN
+train sample size:<PIL.Image.Image image mode=RGB size=500x333 at 0x1332A7250>
