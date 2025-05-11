@@ -1,0 +1,13 @@
+start ==========================
+epoch 20
+Using device: mps
+model:fcn
+num_class:21
+lr:1e-06
+opt:Adam
+
+Epoch 1, Train Loss: 3.0557
+Epoch 2, Train Loss: 3.0560
+Epoch 3, Train Loss: 3.0557
+Epoch 4, Train Loss: 3.0554
+Epoch 5, Train Loss: 3.0547
