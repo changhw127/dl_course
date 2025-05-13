@@ -308,10 +308,8 @@ def visualize_fcn_prediction(model, pic_name, image_tensor, alpha=0.5, show_orig
     name = pic_name.split('.')[0]
     save_path = f'results/fcn_seg_{name}.png'
     figsize = (12, 6)
-
     # orig_h, orig_w = image_tensor.shape[-2:]
-
-    # --- 2. 模型预测 ---
+    # 模型预测
     with torch.no_grad():
         logits = model(image_tensor)  # (1, 21, H, W)
         # 合理的 Logits 值应在 [-10, 10] 之间
@@ -333,10 +331,8 @@ def visualize_fcn_prediction(model, pic_name, image_tensor, alpha=0.5, show_orig
     display_image = np.clip(display_image, 0, 1)
 
     voc_colormap = np.array(VOC_COLORMAP, dtype=np.uint8)
-
     # 生成彩色掩码
     pred_mask_color = voc_colormap[pred_mask]  # (H, W, 3)
-
     # 可视化
     plt.figure(figsize=figsize)
 

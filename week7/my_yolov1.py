@@ -106,10 +106,8 @@ class YOLOv1(nn.Module):
             nn.LeakyReLU(0.1),
             nn.Conv2d(1024, B * 5 + C, kernel_size=1)  # 输出通道数=B*5+C
         )
-
         # 初始化权重
         # self._initialize_weights()
-
         self.init_criterion()
         self.init_optimizer()
 
@@ -140,7 +138,7 @@ class YOLOv1(nn.Module):
                 nn.init.normal_(m.weight, 0, 0.01)
                 nn.init.constant_(m.bias, 0)  # 偏置初始化为0
 
-    def initialize_weights(self):
+    def _initialize_weights(self):
         # 确保 卷积层、全连接层 的权重没有被初始化为 0 或极端值
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -171,7 +169,7 @@ class YOLOv1(nn.Module):
         全连接层计算量过大，会产生约2亿参数, 使用全卷积
         在卷积层后直接使用Flatten+FC会破坏空间相关性
         部分使用BN，
-        优化权重初始化，因为可能导致空张量问题
+        取消权重初始化，因为可能导致空张量问题
         使用L2正则化
         '''.strip().replace(' ', '')
         return msg
@@ -225,7 +223,6 @@ class YOLOv1Loss(nn.Module):
         # 分离预测各个部分
         pred_boxes = predictions[..., :self.B*5].view(-1, self.S, self.S, self.B, 5)
         pred_classes = predictions[..., self.B*5:]
-
         target_boxes = targets[..., :5].view(-1, self.S, self.S, 5)
         target_boxes = target_boxes.unsqueeze(3)
         target_boxes = target_boxes.expand(-1, -1, -1, 2, -1) # 最终形状为 batch, 7,7,2,5
@@ -250,7 +247,6 @@ class YOLOv1Loss(nn.Module):
         conf_loss = self.confidence_loss(pred_boxes[..., 4], target_boxes[..., 4], obj_mask, noobj_mask, resp_mask)
         class_loss = self.class_loss(pred_classes, target_classes, obj_mask)
         total_loss = coord_loss + conf_loss + class_loss
-
         return total_loss
 
     def coordinate_loss(self, pred_boxes, target_boxes, resp_mask):
@@ -319,7 +315,6 @@ class YOLOv1Tools(object):
             box1 = torch.tensor(box1)
         if not isinstance(box2, torch.Tensor):
             box2 = torch.tensor(box2)
-
         # 转换cxcywh到xyxy格式
         box1_xyxy = cls._cxcywh_to_xyxy(box1)
         box2_xyxy = cls._cxcywh_to_xyxy(box2)
@@ -379,15 +374,12 @@ class YOLOv1Tools(object):
         # 开始进行便利，每个类别执行NMS
         for i in range(C):
             class_mask = filtered_class_scores[:, i] > conf_threshold
-
             if class_mask.sum() == 0:
                 # 空了
                 continue
-
             # 取出当前分类的过滤后的分数已经对应的box
             scores = filtered_class_scores[class_mask, i]
             selected_boxes = filtered_boxes[class_mask]
-
             # 排序
             sorted_indices = torch.argsort(scores, descending=True)
             selected_boxes = selected_boxes[sorted_indices]
@@ -396,7 +388,6 @@ class YOLOv1Tools(object):
             while len(scores) > 0:
                 best_box = selected_boxes[0].unsqueeze(0)
                 best_score = scores[0].unsqueeze(0)
-
                 if len(scores) == 1:
                     # 只有一个，保留
                     final_boxes.append(best_box)
@@ -468,7 +459,6 @@ class VOCDataset(Dataset):
             image = self.transform(image)
         return image, target
 
-
     def parse_voc_annotation(self, target):
         width = int(target['annotation']['size']['width'])
         height = int(target['annotation']['size']['height'])
@@ -538,10 +528,10 @@ def run():
     batch_size = 16
     opt = 'SGD'
     lr = 0.000001
-    epochs = 100
+    epochs = 10
     first_clear_log = True
 
-    name_ = f'{model_name}_{opt}_{lr}_{batch_size}_o1'
+    name_ = f'{model_name}_{opt}_{lr}_{batch_size}_o2'
     loger = Logger(path='results', filename=name_)
     train_loss_ls = []
 
