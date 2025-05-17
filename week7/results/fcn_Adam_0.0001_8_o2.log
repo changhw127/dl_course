@@ -1,0 +1,32 @@
+start ==========================
+epoch 20
+Using device: mps
+model:fcn
+num_class:21
+lr:0.0001
+opt:Adam
+
+Epoch 1, Train Loss: 2.6463
+Epoch 2, Train Loss: 0.3922
+Epoch 3, Train Loss: 0.2334
+Epoch 4, Train Loss: 0.1412
+Epoch 5, Train Loss: 0.1028
+Epoch 6, Train Loss: 0.0839
+Epoch 7, Train Loss: 0.0722
+Epoch 8, Train Loss: 0.0621
+Epoch 9, Train Loss: 0.0596
+Epoch 10, Train Loss: 0.0507
+Epoch 11, Train Loss: 0.0467
+Epoch 12, Train Loss: 0.0455
+Epoch 13, Train Loss: 0.0790
+Epoch 14, Train Loss: 0.0565
+Epoch 15, Train Loss: 0.0472
+Epoch 16, Train Loss: 0.0426
+Epoch 17, Train Loss: 0.0406
+Epoch 18, Train Loss: 0.0430
+Epoch 19, Train Loss: 0.0395
+Epoch 20, Train Loss: 0.0374
+result plt ok.
+cost 248.013818 s
+最终结果: 训练损失: 0.0374
+finished.

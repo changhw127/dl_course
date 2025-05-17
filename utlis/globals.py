@@ -125,6 +125,22 @@ def plt_result(data, path='', name='test', logger=None):
     return True
 
 
+def plt_loss_result(data, path='', name='test', logger=None):
+    plt.figure(figsize=(6, 4))
+    train_loss = [t.cpu().item() if torch.is_tensor(t) else t for t in data]
+
+    plt.plot(train_loss, label='Train Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    plt.savefig('{}/{}.png'.format(path, name), dpi=300)
+    if logger:
+        logger.log('result plt ok.')
+    return True
+
+
+
 def load_model(model_class, path, device='mps'):
     model = model_class()
     model.load_state_dict(torch.load(path, map_location=device))

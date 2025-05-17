@@ -1,0 +1,13 @@
+start ==========================
+epoch 100
+Using device: mps
+model:yolo_v1
+lr:0.0001
+opt:SGD
+全连接层计算量过大，会产生约2亿参数,使用全卷积
+在卷积层后直接使用Flatten+FC会破坏空间相关性
+使用BN
+train sample size:<PIL.Image.Image image mode=RGB size=500x333 at 0x133567280>
+
+
+RuntimeError: [srcBuf length] > 0 INTERNAL ASSERT FAILED at "/Users/runner/work/pytorch/pytorch/pytorch/aten/src/ATen/native/mps/OperationUtils.mm":341, please report a bug to PyTorch. Placeholder tensor is empty!
