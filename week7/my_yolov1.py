@@ -127,6 +127,13 @@ class YOLOv1(nn.Module):
         return layers
 
     def _initialize_weights_old(self):
+        """
+        这里问了下大模型，然后有说用参数初始化的时候会比较好，比如使用Kaiming初始化LeakyReLU，正态分布全链接的初始化。
+        但是发现初始化后有时候运行到一般就会出现空张量的问题，导致模型预测异常。所以后来取消掉了。
+        不用的化，损失有时候一开始会很多，用了的话，基本都是100开始的。
+        :return:
+        """
+
         for m in self.modules():  # 遍历所有网络层
             if isinstance(m, nn.Conv2d):
                 # 卷积层：使用Kaiming初始化（针对LeakyReLU优化）
