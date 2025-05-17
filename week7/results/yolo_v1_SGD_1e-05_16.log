@@ -1,0 +1,22 @@
+start ==========================
+epoch 10
+Using device: mps
+model:yolo_v1
+lr:1e-05
+opt:SGD
+
+train sample size:<PIL.Image.Image image mode=RGB size=500x333 at 0x1314FA560>
+Epoch 1, Train Loss: 105.2337
+Epoch 2, Train Loss: 102.8509
+Epoch 3, Train Loss: 101.6981
+Epoch 4, Train Loss: 101.4658
+Epoch 5, Train Loss: 100.9023
+Epoch 6, Train Loss: 101.2971
+Epoch 7, Train Loss: 100.6535
+Epoch 8, Train Loss: 101.0001
+Epoch 9, Train Loss: 100.5874
+Epoch 10, Train Loss: 100.4406
+result plt ok.
+cost 1494.301323 s
+最终结果: 训练损失: 100.4406
+finished.

@@ -1,0 +1,25 @@
+start ==========================
+epoch 100
+Using device: mps
+model:yolo_v1
+lr:0.0001
+opt:SGD
+全连接层计算量过大，会产生约2亿参数,使用全卷积
+在卷积层后直接使用Flatten+FC会破坏空间相关性
+使用BN
+train sample size:<PIL.Image.Image image mode=RGB size=500x333 at 0x13157B1C0>
+
+
+
+
+问题：
+在 YOLOv1 中，初始化权重不当可能会导致某些层的输出变为 NaN 或 0，进而导致后续计算出现空张量（empty tensor），从而触发类似 RuntimeError: Placeholder tensor is empty! 的错误。
+
+可能的原因
+某些层的权重初始化为 0，导致前向传播后输出全 0，影响损失计算。
+
+某些激活函数（如 ReLU）在输入全负时输出全 0，导致梯度消失。
+
+Batch Normalization (BN) 层初始化问题，如果 BN 的 gamma 初始化为 0，可能导致某些通道被抑制。
+
+MPS (Metal Performance Shaders) 后端兼容性问题，PyTorch 的 MPS 后端可能对某些操作（如空张量计算）支持不完善。
