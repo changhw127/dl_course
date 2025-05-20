@@ -28,7 +28,7 @@ class CustomRNN(nn.Module):
         for t in range(x.size()[1]):  # 遍历时间步
             x_t = x[:, t, :]  # 获取当前时间步的输入 torch.Size([64, 28])
             """
-            x_t: torch.Size([28, 128])
+            x_t: torch.Size([64, 28])
             Wxa: torch.Size([28, 128])
             a_t: torch.Size([64, 128])
             Waa: torch.Size([128, 128])
