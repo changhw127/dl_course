@@ -1,8 +1,9 @@
 import math
 import torch
 import torch.nn as nn
-from deal_data import MyData, PARALLEL_DATA, tokenize_en, encode_sentence
+from deal_data import MyData, PARALLEL_DATA, tokenize_en, encode_sentence, ParallelTextDataset
 from utlis.globals import Logger, save_model, plt_loss_result, get_device, load_model
+from torch.utils.data import DataLoader
 
 
 class PositionalEncoding(nn.Module):
@@ -144,7 +145,17 @@ def train_model():
     tgt_vocab_size = len(data_obj.vocab_zh)
 
     device = get_device(True, logger)
-
+    model_args = {
+        'd_model': d_model,
+        'num_heads': num_heads,
+        'num_encoder_layers': num_encoder_layers,
+        'num_decoder_layers': num_decoder_layers,
+        'd_ff': d_ff,
+        'dropout': dropout,
+        'src_vocab_size': src_vocab_size,
+        'tgt_vocab_size': tgt_vocab_size,
+    }
+    logger.log('model_args: {}'.format(str(model_args)))
     model = Transformer(src_vocab_size, tgt_vocab_size, d_model, num_heads,
                         num_encoder_layers, num_decoder_layers, d_ff, dropout)
     model.to(device)
@@ -189,14 +200,112 @@ def train_model():
     return True
 
 
-def test_model():
+def train_model_by_dataloader():
+    batch_size = 2
+    max_len = 20
+    m_name = 'pytorch_dataloader_transformer'
+    d_model = 64
+    num_heads = 4
+    num_encoder_layers = 2
+    num_decoder_layers = 2
+    d_ff = 128
+    dropout = 0.1
+    dataset = ParallelTextDataset(max_len=max_len)
+    src_vocab_size = len(dataset.vocab_en)
+    tgt_vocab_size = len(dataset.vocab_zh)
+
+    logger = Logger('results', m_name)
+    device = get_device(True, logger)
+    model_args = {
+        'd_model': d_model,
+        'num_heads': num_heads,
+        'num_encoder_layers': num_encoder_layers,
+        'num_decoder_layers': num_decoder_layers,
+        'd_ff': d_ff,
+        'dropout': dropout,
+        'src_vocab_size': src_vocab_size,
+        'tgt_vocab_size': tgt_vocab_size,
+    }
+    train_args = {
+        'batch_size': batch_size,
+        'max_len': max_len,
+    }
+    logger.log(f'{m_name} train --------------', clear=True)
+    logger.log('model_args: {}'.format(str(model_args)))
+    logger.log('train_args: {}'.format(str(train_args)))
+
+    dataloader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        collate_fn=lambda batch: ParallelTextDataset.collate_fn(batch, pad_idx=dataset.pad_idx_en)
+    )
+
+    model = Transformer(src_vocab_size, tgt_vocab_size, d_model, num_heads,
+                        num_encoder_layers, num_decoder_layers, d_ff, dropout)
+    model.to(device)
+
+    criterion = nn.CrossEntropyLoss(ignore_index=dataset.word2idx_zh['<PAD>'])
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.98), eps=1e-9)
+
+    epochs = 50
+    model.train()
+    loss_history = []
+
+    for epoch in range(epochs):
+        total_loss = 0
+
+        for batch in dataloader:
+            src = batch['src'].to(device)
+            tgt = batch['tgt'].to(device)
+
+            # 准备输入和输出
+            tgt_input = tgt[:, :-1]  # 去掉EOS作为decoder输入
+            tgt_output = tgt[:, 1:]  # 去掉BOS作为decoder输出目标
+
+            # 创建目标掩码
+            tgt_seq_len = tgt_input.size(1)
+            tgt_mask = model.generate_square_subsequent_mask(tgt_seq_len).to(device)
+
+            # 清零梯度
+            optimizer.zero_grad()
+
+            # 前向传播
+            logits = model(src, tgt_input, tgt_mask=tgt_mask)
+
+            # 计算损失
+            loss = criterion(
+                logits.view(-1, logits.size(-1)),
+                tgt_output.reshape(-1)
+            )
+
+            # 反向传播
+            loss.backward()
+            optimizer.step()
+
+            total_loss += loss.item()
+
+        avg_loss = total_loss / len(dataloader)
+        loss_history.append(avg_loss)
+        logger.log(f'Epoch {epoch + 1}/{epochs}, Loss: {avg_loss:.4f}')
+
+    logger.log("Training finished!")
+    save_model(model, m_name)
+    plt_loss_result(loss_history, path='results', name=m_name, logger=logger)
+    return True
+
+
+def test_model(m_name):
+    # m_name = 'pytorch_dataloader_transformer'
+    path = f'results/{m_name}.pth'
     src_sentence = PARALLEL_DATA[2][0]
     device = get_device()
     data_obj = MyData(PARALLEL_DATA)
     max_len = 20
 
     model_args = {'d_model': 64, 'num_heads': 4, 'num_encoder_layers': 2, 'num_decoder_layers': 2, 'd_ff': 128, 'dropout': 0.1, 'src_vocab_size': 27, 'tgt_vocab_size': 29}
-    model = load_model(Transformer, 'results/pytorch_transformer.pth', 'mps', **model_args)
+    # model = load_model(Transformer, 'results/pytorch_transformer.pth', 'mps', **model_args)
+    model = load_model(Transformer, path, 'mps', **model_args)
 
     print('输入:', src_sentence)
     src_ids = encode_sentence(src_sentence, tokenize_en, data_obj.word2idx_en, data_obj.max_len_en)
@@ -214,13 +323,15 @@ def test_model():
             break
     translated_sentence = [data_obj.idx2word_zh[idx] for idx in tgt_ids]
     print('预测:' + ' '.join(translated_sentence))
-
     return
 
 
 if __name__ == '__main__':
     train_model()
-    test_model()
+    test_model(m_name='pytorch_transformer')
+    # 使用dataloader
+    train_model_by_dataloader()
+    test_model(m_name='pytorch_dataloader_transformer')
     """"
     改进点
     1 使用 nn.MultiheadAttention：替换了自定义的注意力实现，使用 PyTorch 内置的高效实现。
