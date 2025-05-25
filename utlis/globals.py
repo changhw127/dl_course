@@ -140,15 +140,15 @@ def plt_loss_result(data, path='', name='test', logger=None):
     return True
 
 
-
-def load_model(model_class, path, device='mps'):
-    model = model_class()
-    model.load_state_dict(torch.load(path, map_location=device))
+def load_model(model_class, path, device='mps', **model_args):
+    # 实例化模型
+    model = model_class(**model_args)
+    # 加载状态字典
+    model.load_state_dict(torch.load(path, map_location=device, weights_only=True))
     model.to(device)
-    model.eval()  # 如果是推理阶段，设置为eval模式
+    model.eval()  # 设置为评估模式
     print(f"模型参数已从 {path} 加载")
     return model
-
 
 def save_model(model, name, path='results'):
     torch.save(model.state_dict(), '{}/{}.pth'.format(path, name))
