@@ -1,0 +1,55 @@
+pytorch_dataloader_transformer train --------------
+model_args: {'d_model': 64, 'num_heads': 4, 'num_encoder_layers': 2, 'num_decoder_layers': 2, 'd_ff': 128, 'dropout': 0.1, 'src_vocab_size': 27, 'tgt_vocab_size': 29}
+train_args: {'batch_size': 2, 'max_len': 20}
+Epoch 1/50, Loss: 3.5603
+Epoch 2/50, Loss: 2.8735
+Epoch 3/50, Loss: 2.6315
+Epoch 4/50, Loss: 2.3974
+Epoch 5/50, Loss: 2.1112
+Epoch 6/50, Loss: 1.8080
+Epoch 7/50, Loss: 1.5774
+Epoch 8/50, Loss: 1.5001
+Epoch 9/50, Loss: 1.2491
+Epoch 10/50, Loss: 1.0966
+Epoch 11/50, Loss: 1.0177
+Epoch 12/50, Loss: 0.9362
+Epoch 13/50, Loss: 0.7532
+Epoch 14/50, Loss: 0.7510
+Epoch 15/50, Loss: 0.6058
+Epoch 16/50, Loss: 0.5632
+Epoch 17/50, Loss: 0.5141
+Epoch 18/50, Loss: 0.4898
+Epoch 19/50, Loss: 0.3971
+Epoch 20/50, Loss: 0.3984
+Epoch 21/50, Loss: 0.3626
+Epoch 22/50, Loss: 0.3321
+Epoch 23/50, Loss: 0.2888
+Epoch 24/50, Loss: 0.2826
+Epoch 25/50, Loss: 0.2583
+Epoch 26/50, Loss: 0.2453
+Epoch 27/50, Loss: 0.2226
+Epoch 28/50, Loss: 0.2297
+Epoch 29/50, Loss: 0.1941
+Epoch 30/50, Loss: 0.1671
+Epoch 31/50, Loss: 0.1436
+Epoch 32/50, Loss: 0.1575
+Epoch 33/50, Loss: 0.1554
+Epoch 34/50, Loss: 0.1263
+Epoch 35/50, Loss: 0.1211
+Epoch 36/50, Loss: 0.1251
+Epoch 37/50, Loss: 0.0933
+Epoch 38/50, Loss: 0.0948
+Epoch 39/50, Loss: 0.1454
+Epoch 40/50, Loss: 0.0910
+Epoch 41/50, Loss: 0.0840
+Epoch 42/50, Loss: 0.0888
+Epoch 43/50, Loss: 0.0704
+Epoch 44/50, Loss: 0.0681
+Epoch 45/50, Loss: 0.0598
+Epoch 46/50, Loss: 0.0553
+Epoch 47/50, Loss: 0.0536
+Epoch 48/50, Loss: 0.0543
+Epoch 49/50, Loss: 0.0525
+Epoch 50/50, Loss: 0.0545
+Training finished!
+result plt ok.
