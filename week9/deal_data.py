@@ -9,17 +9,26 @@ from collections import Counter
 
 
 SPECIAL_TOKENS = ['<PAD>', '<BOS>', '<EOS>', '<UNK>']
+# PARALLEL_DATA = [
+#     ('Hello, how ard you?', '你好，你 怎么样？'),
+#     ('I am fine, thank you.', '我 很好，谢谢。'),
+#     ('I am a student.', '我 是 一名 学生。'),
+#     ('I love learning new things', '我 爱 学习 新 事物。'),
+#     ('This is a book.', '这 是 一 本 书'),
+#     ('Thank you very much.', '非常 感谢 你。'),
+#     ('I am going to school.', '我 去 学校。'),
+#     ('I am going to work.', '我 去 工作。'),
+# ]
 PARALLEL_DATA = [
-    ('Hello, how ard you?', '你好，你 怎么样？'),
-    ('I am fine, thank you.', '我 很好，谢谢。'),
-    ('I am a student.', '我 是 一名 学生。'),
-    ('I love learning new things', '我 爱 学习 新 事物。'),
+    ('Hello, how ard you?', '你好 ，你 怎么样 ？'),
+    ('I am fine, thank you.', '我 很好 ，谢谢 。'),
+    ('I am a student.', '我 是 一名 学生 。'),
+    ('I love learning new things', '我 爱 学习 新 事物 。'),
     ('This is a book.', '这 是 一 本 书'),
-    ('Thank you very much.', '非常 感谢 你。'),
-    ('I am going to school.', '我 去 学校。'),
-    ('I am going to work.', '我 去 工作。'),
+    ('Thank you very much.', '非常 感谢 你 。'),
+    ('I am going to school.', '我 去 学校 。'),
+    ('I am going to work.', '我 去 工作 。'),
 ]
-
 
 def tokenize_en(sentence):
     sentence = sentence.lower()
@@ -51,13 +60,13 @@ class MyData(object):
         self.vocab_zh = None
         self.encoded_en = None
         self.encoded_zh = None
+        self.encode_data = None
         self.word2idx_en = None
         self.word2idx_zh = None
         self.idx2word_en = None
         self.idx2word_zh = None
         self.max_len_en = None
         self.sentences_encoded()
-
 
     def sentences_encoded(self):
         # 获取所有英文句子的词
@@ -99,6 +108,7 @@ class MyData(object):
         # 需要什么进行给值
         self.vocab_en = vocab_en
         self.vocab_zh = vocab_zh
+        self.encode_data = encode_data
         self.encoded_en = encoded_en
         self.encoded_zh = encoded_zh
         self.word2idx_en = word2idx_en
