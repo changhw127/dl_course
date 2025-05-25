@@ -38,6 +38,9 @@ class MultiHeadAttention(nn.Module):
         self.dropout = nn.Dropout(dropout)
         self.linear_out = nn.Linear(d_model, d_model)
 
+        # 用于可视化权重
+        self.attention_weights = None
+
     def forward(self, query, key, value, mask=None):
         batch_size = query.size(0)
         # 线性映射
@@ -55,6 +58,9 @@ class MultiHeadAttention(nn.Module):
             scores = scores.masked_fill(mask == 0, float('-inf'))
         attn = torch.softmax(scores, dim=-1)
         attn = self.dropout(attn)
+        # 保存权重
+        self.attention_weights = attn.detach().cpu().numpy()
+
         out = torch.matmul(attn, V)
         # 合并多个头
         out = out.transpose(1, 2).contiguous().view(batch_size, -1, self.d_model)
@@ -163,14 +169,16 @@ class Transformer(nn.Module):
         self.fc_out = nn.Linear(d_model, tgt_vocab_size)  # 输出层
 
     def forward(self, src, tgt, src_mask=None, tgt_mask=None):
+        # src tensor([[ 1, 11, 12, 13,  6,  2,  0]], device='mps:0')
         src_emb = self.src_embed(src) * math.sqrt(self.d_model)
+        # torch.Size([1, 7, 64]) 将输入的src长度为7个单词，64表示词向量维度，编码后，进行缩放
         src_emb = self.pos_encoder(src_emb)
-        memory = self.encoder(src_emb, mask=src_mask)
+        memory = self.encoder(src_emb, mask=src_mask)  # torch.Size([1, 7, 64])
 
-        tgt_emb = self.tgt_embed(tgt) * math.sqrt(self.d_model)
+        tgt_emb = self.tgt_embed(tgt) * math.sqrt(self.d_model)  # torch.Size([1, 6]) -> torch.Size([1, 6, 64])
         tgt_emb = self.pos_encoder(tgt_emb)
-        output = self.decoder(tgt_emb, memory, tgt_mask)
-        logits = self.fc_out(output)
+        output = self.decoder(tgt_emb, memory, tgt_mask)  # torch.Size([1, 6, 64])
+        logits = self.fc_out(output)  # torch.Size([1, 6, 25])
         return logits
 
     @classmethod
@@ -203,7 +211,7 @@ class SimpleLRScheduler(object):
 def train_model():
     # 参数设置
     data_obj = MyData(PARALLEL_DATA)
-    m_name = 'my_transformer'
+    m_name = 'my_transformer_details'
     logger = Logger('results', m_name)
     logger.log(f'{m_name} train --------------', clear=True)
 
@@ -245,16 +253,24 @@ def train_model():
         model.train()
         total_loss = 0.0
         for src_sentence, tgt_sentence in zip(data_obj.encoded_en, data_obj.encoded_zh):
-            src_input = src_sentence.unsqueeze(0).to(device)
-            tgt_input = tgt_sentence[:-1].unsqueeze(0).to(device)
-            tgt_output = tgt_sentence[1:].unsqueeze(0).to(device)
+            # src_sentence tensor([ 1, 11, 12, 13,  6,  2,  0])
+            # tgt_sentence tensor([1, 7, 8, 2, 0, 0, 0])
+            src_input = src_sentence.unsqueeze(0).to(device)  # tensor([[ 1, 11, 12, 13,  6,  2,  0]], device='mps:0')
+            tgt_input = tgt_sentence[:-1].unsqueeze(0).to(device)  # tensor([[1, 7, 8, 2, 0, 0]], device='mps:0')
+            tgt_output = tgt_sentence[1:].unsqueeze(0).to(device)  # tensor([[7, 8, 2, 0, 0, 0]], device='mps:0')
 
-            tgt_seq_len = tgt_input.size(1)
+            tgt_seq_len = tgt_input.size(1)  # 6
             tgt_mask = Transformer.generate_square_subsequent_mask(tgt_seq_len).to(tgt_input.device).to(dtype=torch.float32)
+            # tensor([[1., 0., 0., 0., 0., 0.],
+            #         [1., 1., 0., 0., 0., 0.],
+            #         [1., 1., 1., 0., 0., 0.],
+            #         [1., 1., 1., 1., 0., 0.],
+            #         [1., 1., 1., 1., 1., 0.],
+            #         [1., 1., 1., 1., 1., 1.]], device='mps:0')
 
-            logits = model(src_input, tgt_input, src_mask=None, tgt_mask=tgt_mask)
-            logits = logits.reshape(-1, tgt_vocab_size)
-            tgt_output = tgt_output.reshape(-1)
+            logits = model(src_input, tgt_input, src_mask=None, tgt_mask=tgt_mask)  # torch.Size([1, 6, 25])
+            logits = logits.reshape(-1, tgt_vocab_size)  # torch.Size([6, 25])
+            tgt_output = tgt_output.reshape(-1)  # torch.Size([6])
 
             loss = criterion(logits, tgt_output)
             scheduler.zero_grad()
@@ -265,7 +281,7 @@ def train_model():
         logger.log(f'Epoch {epoch + 1}/{epochs}, Loss: {total_loss / len(data_obj.encoded_en):.4f}')
         loss_ls.append(total_loss / len(data_obj.encoded_en))
     logger.log("Training finished!")
-    save_model(model, 'my_transformer')
+    save_model(model, m_name)
     plt_loss_result(loss_ls, path='results', name=m_name, logger=logger)
     return True
 
@@ -276,8 +292,8 @@ def test_model():
     data_obj = MyData(PARALLEL_DATA)
     max_len = 20
 
-    model_args = {'d_model': 64, 'num_heads': 4, 'num_encoder_layers': 2, 'num_decoder_layers': 2, 'd_ff': 128, 'dropout': 0.1, 'src_vocab_size': 27, 'tgt_vocab_size': 25}
-    model = load_model(Transformer, 'results/my_transformer.pth', 'mps', **model_args)
+    model_args = {'d_model': 64, 'num_heads': 4, 'num_encoder_layers': 2, 'num_decoder_layers': 2, 'd_ff': 128, 'dropout': 0.1, 'src_vocab_size': 27, 'tgt_vocab_size': 29}
+    model = load_model(Transformer, 'results/my_transformer_details.pth', 'mps', **model_args)
     model.eval()
 
     print('输入:', src_sentence)
@@ -305,5 +321,5 @@ def test_model():
 
 
 if __name__ == '__main__':
-    # train_model()
+    train_model()
     test_model()
