@@ -1,6 +1,7 @@
 #  -*- utf-8 -*-
 import torch
 import torchvision.models as models
+import torchvision
 import torch.nn as nn
 
 
@@ -11,3 +12,7 @@ def sample():
     model.fc = nn.Linear(models.fc.in_features, 2)
     opt = torch.optim.Adam(model.parameters(), lr=1e-3)
     pass
+
+
+
+# train_dataset = torchvision.datasets.CIFAR100(root='../data/cifar-100-python', train=True, download=False, transform=train_transform)

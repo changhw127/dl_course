@@ -65,9 +65,9 @@ class Discriminator(nn.Module):
             nn.LeakyReLU(0.2, inplace=True),
             nn.Linear(512, 256),
             nn.LeakyReLU(0.2, inplace=True),
-            # nn.Linear(256, 128),
-            # nn.LeakyReLU(0.2, inplace=True),
-            nn.Linear(256, 1),
+            nn.Linear(256, 128),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Linear(128, 1),
             nn.Sigmoid()
         )
 
@@ -76,7 +76,7 @@ class Discriminator(nn.Module):
 
 
 if __name__ == '__main__':
-    batch_size = 128
+    batch_size = 64
     lr = 0.0002
     epochs = 10
     latent_dim = 100
@@ -136,6 +136,8 @@ if __name__ == '__main__':
             if idx % 100 == 0:
                 print(f'Epoch [{epoch + 1}/{epochs}], Step [{idx}/{len(dataloader)}], '
                       f'Loss_D: {loss_D.item():.4f}, Loss_G: {loss_G.item():.4f}')
+        # print(f'Epoch [{epoch + 1}/{epochs}], Step [{idx}/{len(dataloader)}], '
+        #       f'Loss_D: {loss_D.item():.4f}, Loss_G: {loss_G.item():.4f}')
 
 
 """
@@ -150,6 +152,10 @@ batch调整
 Epoch [10/10], Step [900/938], Loss_D: 1.4485, Loss_G: 0.6582
 D的训练轮次和lr进行调整
 
+
+Epoch [10/10], Step [400/469], Loss_D: 1.1687, Loss_G: 0.9292
+
+Epoch [10/10], Step [900/938], Loss_D: 1.3604, Loss_G: 0.7878
 
 建议
 1. **调整学习率**：可以尝试降低判别器的学习率或者提高生成器的学习率，使得生成器能够更好地学习。也可以使用两个优化器不同的学习率。
