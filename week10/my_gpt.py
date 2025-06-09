@@ -2,11 +2,11 @@
 import math
 import torch
 import torch.nn as nn
-from torch.utils.data import dataset, dataloader
-import torch.nn.functional as f
+from torch.utils.data import Dataset, DataLoader
+import torch.nn.functional as F
 
 
-class simpletokenizer(object):
+class SimpleTokenizer(object):
     def __init__(self):
         self.special_tokens = ['<pad>', '<bos>', '<eos>']
         self.vocab = {}
@@ -33,7 +33,7 @@ class simpletokenizer(object):
         return [self.inv_vocab.get(i, '<pad>') for i in ids]
 
 
-class clmdataset(dataset):
+class CLMDataset(Dataset):
     def __init__(self, texts, tokenizer, seq_len=16):
         examples = []
         pad_id = tokenizer.vocab['<pad>']
@@ -63,18 +63,18 @@ class clmdataset(dataset):
         return self.examples[i]
 
 
-class decoderblock(nn.module):
+class DecoderBlock(nn.Module):
     def __init__(self, embed_dim, num_heads, ff_hidden, dropout=0.1):
-        super(decoderblock, self).__init__()
-        self.self_attn = nn.multiheadattention(embed_dim, num_heads, dropout=dropout)
-        self.lnl = nn.layernorm(embed_dim)
-        self.ff = nn.sequential(
-            nn.linear(embed_dim, ff_hidden),
-            nn.gelu(),
-            nn.linear(ff_hidden, embed_dim)
+        super(DecoderBlock, self).__init__()
+        self.self_attn = nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout)
+        self.lnl = nn.LayerNorm(embed_dim)
+        self.ff = nn.Sequential(
+            nn.Linear(embed_dim, ff_hidden),
+            nn.GELU(),
+            nn.Linear(ff_hidden, embed_dim)
         )
-        self.ln2 = nn.layernorm(embed_dim)
-        self.drop = nn.dropout(dropout)
+        self.ln2 = nn.LayerNorm(embed_dim)
+        self.drop = nn.Dropout(dropout)
 
     def forward(self, x):
         # x: [t, b, d]
@@ -87,24 +87,24 @@ class decoderblock(nn.module):
         return self.ln2(x + self.drop(f))  # 残差连接 + 层归一化
 
 
-class mingpt(nn.module):
+class MINIGPT(nn.Module):
     def __init__(self, vocab_size, seq_len=16, embed_dim=64, n_layers=2, num_heads=4, ff_hidden=256):
-        super(mingpt, self).__init__()
+        super(MINIGPT, self).__init__()
         self.block_size = seq_len
-        self.tok_emb = nn.embedding(vocab_size, embed_dim)
-        self.pos_emb = nn.embedding(seq_len, embed_dim)
-        self.layers = nn.modulelist([
-            decoderblock(embed_dim, num_heads, ff_hidden) for _ in range(n_layers)
+        self.tok_emb = nn.Embedding(vocab_size, embed_dim)
+        self.pos_emb = nn.Embedding(seq_len, embed_dim)
+        self.layers = nn.ModuleList([
+            DecoderBlock(embed_dim, num_heads, ff_hidden) for _ in range(n_layers)
         ])
-        self.ln_f = nn.layernorm(embed_dim)
-        self.head = nn.linear(embed_dim, vocab_size)
+        self.ln_f = nn.LayerNorm(embed_dim)
+        self.head = nn.Linear(embed_dim, vocab_size)
 
     def forward(self, x):
         # x: [b, t]
         b, t = x.size()
         assert t <= self.block_size, "cannot forward, model block size is exhausted"
         tok = self.tok_emb(x)  # [b, t, d]
-        pos = self.pos_emb(torch.arange(t, device=x.device))[none]  # [1, t, d]
+        pos = self.pos_emb(torch.arange(t, device=x.device))[None]  # [1, t, d]
         h = (tok + pos).transpose(0, 1)  # [t, b, d]
         for layer in self.layers:
             h = layer(h)
@@ -113,13 +113,30 @@ class mingpt(nn.module):
 
 
 def train(model, dataloader, epochs=10, lr=1e-3, device='mps'):
-    opt = torch.optim.adamw(model.parameters(), lr=lr)
-    loss = nn.crossentropyloss()
+    opt = torch.optim.AdamW(model.parameters(), lr=lr)
+    loss = nn.CrossEntropyLoss()
     model.to(device).train()
     for epoch in range(epochs):
         total, acc = 0, 0.0
         for x, y in dataloader:
+            # x torch.Size([4, 17])
+            # y torch.Size([4, 17])
+            """
+            x
+            tensor([[ 1, 51, 17, 52, 53, 54, 55,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+                    [ 1, 26, 27, 17,  3, 28, 29,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+                    [ 1,  3, 36, 17, 37, 38, 15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+                    [ 1, 22, 23, 17, 24,  3, 25,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0]])
+            y
+            tensor([[17, 52, 53, 54, 55,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2],
+                    [27, 17,  3, 28, 29,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2],
+                    [36, 17, 37, 38, 15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2],
+                    [23, 17, 24,  3, 25,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2]])
+
+
+            """
             x, y = x.to(device), y.to(device)
+            # logits torch.Size([4, 17, 100])
             logits = model(x)
             l = loss(logits.view(-1, logits.size(-1)), y.view(-1))
             opt.zero_grad()
@@ -150,17 +167,17 @@ def generate(model, tokenizer, prompt, max_len=50, strategy='greedy', temperatur
         logits = model(x_cond)[0, -1]  # [v] model(x_cond) ---> [b, t, v]
         # 屏蔽所有特殊tokens
         logits[special_ids] = -float('inf')
-        # ==== 温度采样核心逻辑 ====
+        # 温度采样
         if temperature != 1.0:
             logits = logits / temperature  # 缩放logits
         # 根据策略选择下一个token_id
         if strategy == 'greedy':
             idx = logits.argmax()
         elif strategy == 'top_k':
-            probs, idxs = f.softmax(logits, dim=-1).topk(kwargs.get('top_k', 10))
+            probs, idxs = F.softmax(logits, dim=-1).topk(kwargs.get('top_k', 10))
             idx = idxs[probs.multinomial(num_samples=1)]
         elif strategy == 'top_p':
-            probs, idxs = f.softmax(logits, dim=-1).sort(descending=True)
+            probs, idxs = F.softmax(logits, dim=-1).sort(descending=True)
             cum = probs.cumsum(0)
             mask = cum < kwargs.get('top_p', 0.9)
             probs = probs * mask
@@ -201,13 +218,13 @@ def test():
         "what are your plans for the weekend",
         "this restaurant has amazing food"
     ]
-    tok = simpletokenizer()
+    tok = SimpleTokenizer()
     tok.build_vocab(texts)
-    ds = clmdataset(texts, tok, seq_len=16)
-    dl = dataloader(ds, batch_size=4, shuffle=true)
+    ds = CLMDataset(texts, tok, seq_len=16)
+    dl = DataLoader(ds, batch_size=4, shuffle=True)
 
     device = 'mps'
-    model = mingpt(len(tok.vocab), seq_len=18).to(device)
+    model = MINIGPT(len(tok.vocab), seq_len=18).to(device)
     train(model, dl, epochs=10, lr=1e-3, device=device)
     result = generate(model, tok, 'hello', max_len=20, strategy='top_p', top_k=5)
     print('生成结果： {}'.format(' '.join(result)))

@@ -160,6 +160,20 @@ def run():
     for epoch in range(10):
         model.train()
         for batch in dataloader:
+            """
+            # batch['input_ids'], 
+            tensor([[ 1,  3,  8,  6,  4,  3,  5,  9, 10, 11,  2,  0],
+            [ 1,  3,  3,  7,  2,  9,  8,  6,  4,  2,  0,  0],
+            [ 1,  5,  9, 10, 11,  3,  3,  3, 13, 14,  2,  0],
+            [ 1,  9,  8,  6,  4,  2,  5,  6,  7,  2,  0,  0]])
+            batch['token_type_ids']
+            tensor([[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1]])
+            # mlm_logits, nsp_logits
+            # torch.Size([4, 12, 20]),  torch.Size([4, 2])
+            """
             mlm_logits, nsp_logits = model(batch['input_ids'], batch['token_type_ids'])
             mlm_loss = loss_mlm(mlm_logits.view(-1, len(vocab)), batch['mlm_labels'].view(-1))
             nsp_loss = loss_nsp(nsp_logits, batch['nsp_labels'])
