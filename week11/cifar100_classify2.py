@@ -199,6 +199,14 @@ plt.show()
 
 
 """
+Train: Loss 0.1871 | Acc 95.02%
+Epoch [18/20] | LR: 0.000012
+Train: Loss 0.1512 | Acc 96.18%
+Epoch [19/20] | LR: 0.000003
+Train: Loss 0.1546 | Acc 96.10%
+Epoch [20/20] | LR: 0.000000
+Train: Loss 0.1401 | Acc 96.46%
+Training complete in 9.30 minutes
 数据预处理优化：
 使用更合适的128x128分辨率
 添加随机裁剪增强
