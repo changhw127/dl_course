@@ -129,8 +129,9 @@ def train(model, dataloader, epochs=10, lr=1e-3, device='mps'):
             acc += l.item()
         print(f'epoch: {epoch} - loss: {acc/total}')
 
+
 @torch.no_grad()
-def generate(model, tokenizer, prompt, max_len=50, strategy='greedy', **kwargs):
+def generate(model, tokenizer, prompt, max_len=50, strategy='greedy', temperature=1, **kwargs):
     """"""
     device = next(model.parameters()).device
     # 特殊tpkens的id列表
@@ -149,6 +150,9 @@ def generate(model, tokenizer, prompt, max_len=50, strategy='greedy', **kwargs):
         logits = model(x_cond)[0, -1]  # [v] model(x_cond) ---> [b, t, v]
         # 屏蔽所有特殊tokens
         logits[special_ids] = -float('inf')
+        # ==== 温度采样核心逻辑 ====
+        if temperature != 1.0:
+            logits = logits / temperature  # 缩放logits
         # 根据策略选择下一个token_id
         if strategy == 'greedy':
             idx = logits.argmax()
@@ -156,18 +160,16 @@ def generate(model, tokenizer, prompt, max_len=50, strategy='greedy', **kwargs):
             probs, idxs = f.softmax(logits, dim=-1).topk(kwargs.get('top_k', 10))
             idx = idxs[probs.multinomial(num_samples=1)]
         elif strategy == 'top_p':
-            probs, idxs = f.softmax(logits, dim=-1).sort(descending=true)
+            probs, idxs = f.softmax(logits, dim=-1).sort(descending=True)
             cum = probs.cumsum(0)
             mask = cum < kwargs.get('top_p', 0.9)
             probs = probs * mask
             idx = idxs[probs.multinomial(num_samples=1)]
         else:
-            raise valueerror(f'invalid strategy: {strategy}')
-
+            raise ValueError(f'invalid strategy: {strategy}')
         # <eos>停止
         if idx.item() == eos_id:
             break
-
         # 拼接输入序列
         x = torch.cat([x, idx.unsqueeze(0)], dim=1)
 
@@ -225,4 +227,10 @@ if __name__ == '__main__':
     epoch: 8 - loss: 1.283841609954834
     epoch: 9 - loss: 1.206007719039917
     生成结果： reading doing with you seen world on python friday friday need reading approaching doing plans please you while the reading
+    
+    
+    组合方式	适用场景	示例参数
+    temperature=0.7, top_p=0.9	平衡质量与多样性（推荐）	GPT-3常用配置
+    temperature=1.2, sample	创意生成	诗歌/故事生成
+    temperature=0.3, top_k=50	事实性回答	问答系统
     """
